@@ -23,7 +23,8 @@ namespace Assignment_3__Teacher_Database.Controllers
         /// A list of Teachers (first names and last names)
         /// </returns>
         [HttpGet]
-        public IEnumerable<Teacher> ListTeachers()
+        [Route ("api/TeacherData/ListTeachers/{searchKey?}")]
+        public IEnumerable<Teacher> ListTeachers(string searchKey=null)
         {
             //Create an instance of a connection
             MySqlConnection Conn = School.AccessDatabase();
@@ -35,7 +36,10 @@ namespace Assignment_3__Teacher_Database.Controllers
             MySqlCommand cmd = Conn.CreateCommand();
 
             //SQL QUERY
-            cmd.CommandText = "Select * from Teachers";
+            cmd.CommandText = "Select * from Teachers where lower(teacherfname) like lower(@key) or lower(teacherlname) like lower(@key) or lower (concat (teacherfname,' ',teacherlname )) like lower(@key)";
+
+            cmd.Parameters.AddWithValue("@key", "%" +  searchKey + "%");
+            cmd.Prepare();
 
             //Gather Result Set of Query into a variable
             MySqlDataReader ResultSet = cmd.ExecuteReader();
@@ -111,6 +115,55 @@ namespace Assignment_3__Teacher_Database.Controllers
                 return NewTeacher;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <example> POST: /api/TeacherData/DeleteTeacher/6</example>
+        
+        [HttpPost]
+        public void DeleteTeacher(int id)
+        {
+            //Create an instance of a connection
+            MySqlConnection Conn = School.AccessDatabase();
+
+            //Open the connection between the web server and database
+            Conn.Open();
+
+            //Establish a new command (query) for our database
+            MySqlCommand cmd = Conn.CreateCommand();
+
+            //SQL QUERY
+            cmd.CommandText = "Delete from teachers where teacherid=@id";
+            cmd.Parameters.AddWithValue("@id", id);
+            cmd.Prepare();
+
+            cmd.ExecuteNonQuery();
+            Conn.Close();
+        }
+
+        [HttpPost]
+        public void AddTeacher(Teacher NewTeacher)
+        {
+            //Create an instance of a connection
+            MySqlConnection Conn = School.AccessDatabase();
+
+            //Open the connection between the web server and database
+            Conn.Open();
+
+            //Establish a new command (query) for our database
+            MySqlCommand cmd = Conn.CreateCommand();
+
+            //SQL QUERY
+            cmd.CommandText = "insert into teacher (teacherfname, teacherlname) values(@TeacherFname, @TeacherLname)";
+            cmd.Parameters.AddWithValue("@TeacherFname", NewTeacher.TeacherFname);
+            cmd.Parameters.AddWithValue("@TeacherLname", NewTeacher.TeacherLname);
+            cmd.Prepare();
+
+            cmd.ExecuteNonQuery();
+            Conn.Close();
+
+        }
     }
 }
 

@@ -143,7 +143,7 @@ namespace Assignment_3__Teacher_Database.Controllers
         }
 
         [HttpPost]
-        public void AddTeacher(Teacher NewTeacher)
+        public void AddTeacher([FromBody]Teacher NewTeacher)
         {
             //Create an instance of a connection
             MySqlConnection Conn = School.AccessDatabase();
@@ -155,9 +155,32 @@ namespace Assignment_3__Teacher_Database.Controllers
             MySqlCommand cmd = Conn.CreateCommand();
 
             //SQL QUERY
-            cmd.CommandText = "insert into teacher (teacherfname, teacherlname) values(@TeacherFname, @TeacherLname)";
+            cmd.CommandText = "insert into teachers (teacherfname, teacherlname) values(@TeacherFname, @TeacherLname)";
             cmd.Parameters.AddWithValue("@TeacherFname", NewTeacher.TeacherFname);
             cmd.Parameters.AddWithValue("@TeacherLname", NewTeacher.TeacherLname);
+            cmd.Prepare();
+
+            cmd.ExecuteNonQuery();
+            Conn.Close();
+
+        }
+
+        public void UpdateTeacher(int id, [FromBody]Teacher TeacherInfo)
+        {
+            //Create an instance of a connection
+            MySqlConnection Conn = School.AccessDatabase();
+
+            //Open the connection between the web server and database
+            Conn.Open();
+
+            //Establish a new command (query) for our database
+            MySqlCommand cmd = Conn.CreateCommand();
+
+            //SQL QUERY
+            cmd.CommandText = "update teachers set teacherfname=@TeacherFname, teacherlname=@TeacherLname where teacherid=@TeacherId";
+            cmd.Parameters.AddWithValue("@TeacherFname", TeacherInfo.TeacherFname);
+            cmd.Parameters.AddWithValue("@TeacherLname", TeacherInfo.TeacherLname);
+            cmd.Parameters.AddWithValue("@TeacherId", id);
             cmd.Prepare();
 
             cmd.ExecuteNonQuery();

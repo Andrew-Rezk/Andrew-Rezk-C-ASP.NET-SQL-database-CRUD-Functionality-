@@ -21,8 +21,8 @@ namespace Assignment_3__Teacher_Database.Controllers
         public ActionResult List(string searchKey = null)
         {
             TeacherDataController controller = new TeacherDataController();
-            
-           IEnumerable<Teacher> Teachers = controller.ListTeachers(searchKey);
+
+            IEnumerable<Teacher> Teachers = controller.ListTeachers(searchKey);
             return View(Teachers);
         }
 
@@ -30,10 +30,10 @@ namespace Assignment_3__Teacher_Database.Controllers
         public ActionResult show(int id)
         {
             TeacherDataController controller = new TeacherDataController();
-            Teacher newTeacher = controller.FindTeacher(id);
-            
+            Teacher SelectedTeacher = controller.FindTeacher(id);
 
-            return View(newTeacher);
+
+            return View(SelectedTeacher);
         }
 
         // GET: /teacher/deleteconfirm/{id}
@@ -66,7 +66,7 @@ namespace Assignment_3__Teacher_Database.Controllers
         public ActionResult Create(string TeacherFname, string TeacherLname)
         {
 
-        Teacher NewTeacher = new Teacher();
+            Teacher NewTeacher = new Teacher();
             NewTeacher.TeacherFname = TeacherFname;
             NewTeacher.TeacherLname = TeacherLname;
 
@@ -76,6 +76,29 @@ namespace Assignment_3__Teacher_Database.Controllers
             Debug.WriteLine("i have accessed the create method");
 
             return RedirectToAction("List");
+        }
+
+        // GET: /Teacher/Update/{id}
+        public ActionResult Update(int id)
+        {
+            TeacherDataController controller = new TeacherDataController();
+            Teacher SelectedTeacher = controller.FindTeacher(id);
+            return View(SelectedTeacher);
+        }
+
+        //POST : /Teacher/Update/{id}
+
+        [HttpPost]
+        public ActionResult Update(int id, string TeacherFname, string TeacherLname)
+        {
+            Teacher TeacherInfo = new Teacher();
+            TeacherInfo.TeacherFname = TeacherFname;
+            TeacherInfo.TeacherLname = TeacherLname;
+
+            TeacherDataController controller = new TeacherDataController();
+            controller.UpdateTeacher(id, TeacherInfo);
+
+            return RedirectToAction("show/" + id);
         }
     }
 }

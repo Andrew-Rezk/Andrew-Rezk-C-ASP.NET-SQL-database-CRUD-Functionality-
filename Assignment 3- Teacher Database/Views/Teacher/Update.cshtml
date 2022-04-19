@@ -1,0 +1,46 @@
+﻿@model Assignment_3__Teacher_Database.Models.Teacher
+@{
+    ViewBag.Title = "Update";
+}
+
+<head>
+    <script language="javascript" type="text/javascript">
+        const fname = document.getElementById("TeacherFname");
+        const lname = document.getElementById("Teacherlname");
+
+        function validateInput() {
+            if (fname.value === "") {
+                fname.focus();
+                return false;
+            }
+
+            if (lname.value === "") {
+                lname.focus();
+                return false;
+            }
+            return true;
+        }
+    </script>
+
+</head>
+
+<div id="containerlist">
+    <nav>
+        <a class="navlink" href="/Teacher/Show/@Model.TeacherId">Back</a>
+    </nav>
+    <h2>Update Teacher</h2>
+    <form method="POST" action="/Teacher/Update/@Model.TeacherId">
+        <div>
+            <label for="TeacherFname">First Name:</label>
+            <input type="text" id="TeacherFname" name="TeacherFname" value="@Model.TeacherFname" />
+        </div>
+
+        <div>
+            <label for="TeacherLname">Last Name:</label>
+            <input type="text" id="TeacherLname" name="TeacherLname" value="@Model.TeacherLname" />
+        </div>
+        <div>
+            <input type="submit" value="Update Teacher" />
+        </div>
+    </form>
+</div>

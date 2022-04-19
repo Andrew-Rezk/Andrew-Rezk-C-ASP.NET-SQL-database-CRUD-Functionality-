@@ -1,0 +1,1 @@
+This Web app allows users full CRUD functionality in order to Create, Read, Update, and Delete information from a SQL database. Javascript form validation is included in the update.cshtml and new.cshtml in order to validate user input. 
